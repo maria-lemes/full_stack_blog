@@ -1,5 +1,5 @@
 const listHelper = require('../utils/list_helper')
-const blogs = require('./blogs_list')
+const blogs = require('./blog_test_helper')
 
 test('dummy returns one', () => {
   const blogs = []
