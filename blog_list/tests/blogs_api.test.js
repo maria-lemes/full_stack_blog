@@ -54,6 +54,42 @@ test('post creates a new blog', async () => {
 
 }, 100000)
 
+test('blog list succeeds with a valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+
+    const blogToView = blogsAtStart[0]
+
+    const resultBlog = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      
+    const processedBlogToView = JSON.parse(JSON.stringify(blogToView))
+
+    expect(resultBlog.body).toEqual(processedBlogToView)
+})
+
+test('blog list deletes a valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+
+    const blogToDelete = blogsAtStart[0]
+
+    const resultBlog = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+    
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+        helper.initialBlogs.length - 1
+    )
+  
+    const titles = blogsAtEnd.map(r => r.title)
+  
+    expect(titles).not.toContain(blogToDelete.title)
+})
+
+
 
 
 afterAll(() => {
