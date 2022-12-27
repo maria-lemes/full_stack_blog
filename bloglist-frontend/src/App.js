@@ -15,7 +15,7 @@ const Notification = ({type, message }) => {
   )
 }
 
-const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,newUrl, setNewUrl,setAddMessage}) => {
+const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,newUrl, setNewUrl,setAddMessage ,setAddBlogVisible}) => {
   const addBlog = (event) => {
     event.preventDefault()
     const blogObject = {
@@ -34,7 +34,7 @@ const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,ne
             setNewAuthor('')
             setNewUrl('') 
             setAddMessage(
-              `${createdBlog.title} was added to the phonebook`
+              `${createdBlog.title} was added to blogs list`
             )
             setTimeout(() => {
               setAddMessage(null)
@@ -55,6 +55,7 @@ const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,ne
   }
 
   return (
+    <div>
     <form onSubmit={addBlog}>
         <div>
           title: <input
@@ -75,9 +76,11 @@ const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,ne
           />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button type="submit" onClick={() => setAddBlogVisible(false)}>add</button>
         </div>
       </form>
+      <button onClick={() => setAddBlogVisible(false)}>cancel</button>
+      </div>
   )
 }
 
@@ -92,6 +95,8 @@ const App = () => {
   const [newUrl, setNewUrl] = useState('')
 
   const [addMessage, setAddMessage] = useState(null)
+  const [addBlogVisible, setAddBlogVisible] = useState(false)
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -170,6 +175,8 @@ const App = () => {
       </div>
     )
   }else{
+    const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
+    const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
     return(
       <div>
         <h2>blogs</h2>
@@ -180,12 +187,21 @@ const App = () => {
         logout
         </button>
         </p>
-        <h2>Create new blog</h2>
-        <BlogForm blogs={blogs} setBlogs={setBlogs} newTitle={newTitle} setNewTitle={setNewTitle} newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} setAddMessage={setAddMessage} />
-        <h2>Published blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
+        <button style= {hideWhenVisible} onClick={() => setAddBlogVisible(true)}>
+          Add new blog
+        </button>
+        <div style= {showWhenVisible}>
+          <h2>Create new blog</h2>
+          <BlogForm blogs={blogs} setBlogs={setBlogs} newTitle={newTitle} setNewTitle={setNewTitle}
+           newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} 
+           setAddMessage={setAddMessage} setAddBlogVisible={setAddBlogVisible} />
+        </div>
+        <div style= {hideWhenVisible}>
+          <h2>Published blogs</h2>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
       </div>
     )
     
