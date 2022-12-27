@@ -3,11 +3,95 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const Notification = ({type, message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className = {type}>
+      {message}
+    </div>
+  )
+}
+
+const BlogForm = ({blogs,setBlogs,newTitle,setNewTitle,newAuthor,setNewAuthor,newUrl, setNewUrl,setAddMessage}) => {
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+      likes: 0
+    }
+    
+    blogService
+      .create(blogObject)
+        .then(createdBlog => {
+          console.log(createdBlog)
+            setBlogs(blogs.concat(createdBlog))
+            setNewTitle('')
+            setNewAuthor('')
+            setNewUrl('') 
+            setAddMessage(
+              `${createdBlog.title} was added to the phonebook`
+            )
+            setTimeout(() => {
+              setAddMessage(null)
+            }, 5000)      
+        })       
+  }
+
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+
+  return (
+    <form onSubmit={addBlog}>
+        <div>
+          title: <input
+           value={newTitle}
+           onChange={handleTitleChange}
+           />
+        </div>
+        <div>
+          author: <input
+          value={newAuthor}
+          onChange={handleAuthorChange} 
+          />
+        </div>
+        <div>
+          url: <input
+          value={newUrl}
+          onChange={handleUrlChange} 
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+  )
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+
+  const [addMessage, setAddMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -15,14 +99,14 @@ const App = () => {
     )  
   }, [])
 
-  // useEffect(() => {
-  //   const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
-  //   if (loggedUserJSON) {
-  //     const user = JSON.parse(loggedUserJSON)
-  //     setUser(user)
-  //     blogService.setToken(user.token)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
 
 
   const handleLogin = async (event) => {
@@ -37,10 +121,17 @@ const App = () => {
         'loggedNoteappUser', JSON.stringify(user)
       ) 
 
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
+      setAddMessage(
+        `Login failed: wrong username or password`
+      )
+      setTimeout(() => {
+        setAddMessage(null)
+      }, 5000)
       console.log('Wrong credentials')
     }
   }
@@ -55,6 +146,7 @@ const App = () => {
     return(
       <div>
          <h2>login to application</h2>
+           <Notification type='failedLogin' message={addMessage} />
             <form onSubmit={handleLogin}>
               <div>
                 username
@@ -81,12 +173,16 @@ const App = () => {
     return(
       <div>
         <h2>blogs</h2>
+        <Notification type='addBlog' message={addMessage} />
         <p>
         {user.name} logged in 
         <button onClick={handleLogout}>
         logout
         </button>
         </p>
+        <h2>Create new blog</h2>
+        <BlogForm blogs={blogs} setBlogs={setBlogs} newTitle={newTitle} setNewTitle={setNewTitle} newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} setAddMessage={setAddMessage} />
+        <h2>Published blogs</h2>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
