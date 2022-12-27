@@ -89,7 +89,22 @@ test('blog list deletes a valid id', async () => {
     expect(titles).not.toContain(blogToDelete.title)
 })
 
+test('blog list modifies likes given a valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb()
 
+    const blogToModify = blogsAtStart[0]
+
+    const resultBlog = await api
+      .put(`/api/blogs/${blogToModify.id}`)
+      .send({likes: blogToModify.likes +1 })
+      .expect(200)
+    
+    const blogsAtEnd = await helper.blogsInDb()
+
+    const blogUpdated = blogsAtEnd.find(r => r.id === blogToModify.id)
+  
+    expect(blogUpdated.likes).toEqual(blogToModify.likes + 1)
+})
 
 
 afterAll(() => {
