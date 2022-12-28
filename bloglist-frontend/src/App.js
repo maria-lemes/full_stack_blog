@@ -19,7 +19,7 @@ const Notification = ({type, message }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  
+
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
@@ -44,6 +44,24 @@ const App = () => {
         })   
         
     setAddBlogVisible(false)
+  }
+
+  const likeBlog = (blogObject) => {
+    console.log(blogObject.likes)
+    blogService
+    .update(blogObject.id, {likes:blogObject.likes})
+    .then(updatedBlog => {
+      console.log(updatedBlog)
+      const updatedBlogs = blogs.map(blog => {
+        if(blog.id === updatedBlog.id){
+          return{
+            ...blog,
+            likes: updatedBlog.likes
+          }
+        } else return blog   
+    })
+      setBlogs(updatedBlogs)
+    })
   }
 
 
@@ -147,7 +165,7 @@ const App = () => {
         <div style= {hideWhenVisible}>
           <h2>Published blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} likeBlog={likeBlog}/>
           )}
         </div>
       </div>
