@@ -47,11 +47,9 @@ const App = () => {
   }
 
   const likeBlog = (blogObject) => {
-    console.log(blogObject.likes)
     blogService
     .update(blogObject.id, {likes:blogObject.likes})
     .then(updatedBlog => {
-      console.log(updatedBlog)
       const updatedBlogs = blogs.map(blog => {
         if(blog.id === updatedBlog.id){
           return{
