@@ -34,7 +34,7 @@ const App = () => {
       .create(blogObject)
         .then(createdBlog => {
           console.log(createdBlog)
-            setBlogs(blogs.concat(createdBlog))  
+            setBlogs(blogs.concat(createdBlog).sort((a, b) => a.likes - b.likes))  
             setAddMessage(
               `${createdBlog.title} was added to blogs list`
             )
@@ -58,14 +58,14 @@ const App = () => {
           }
         } else return blog   
     })
-      setBlogs(updatedBlogs)
+      setBlogs(updatedBlogs.sort((a, b) => a.likes - b.likes))
     })
   }
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+    blogService.getAll().then(blogs => 
+      setBlogs( blogs.sort((a, b) => a.likes - b.likes) )
     )  
   }, [])
 
@@ -142,6 +142,7 @@ const App = () => {
   }else{
     const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
     const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
+    //const sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
     return(
       <div>
         <h2>blogs</h2>
