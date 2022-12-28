@@ -17,7 +17,7 @@ const Blog = ({ blog,likeBlog,deleteBlog }) => {
   return(
     <div>
       <p>
-        {blog.title} {blog.author} Likes: {blog.likes} <button onClick={handleLikeClick}>like</button>
+        {blog.title} {blog.author}<button onClick={handleLikeClick}>like</button>
       </p>
       <button onClick={handleDeleteClick}>delete</button>
     </div>
@@ -26,8 +26,8 @@ const Blog = ({ blog,likeBlog,deleteBlog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
+  //likeBlog: PropTypes.func.isRequired,
+  //deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
