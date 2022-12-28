@@ -17,18 +17,18 @@ describe('Blog app', function() {
   })
 
   describe('Login',function() {
+    it('succeeds with correct credentials', function() {
+      cy.get('#username').type('testuser')
+      cy.get('#password').type('testpwd')
+      cy.get('#login').click()
+      cy.get('#user').should('contain','test user logged in')
+    })
+
     it('fails with wrong credentials', function() {
       cy.get('#username').type('testfail')
       cy.get('#password').type('testpwd')
       cy.get('#login').click()
       cy.contains('Login failed:')
-    })
-
-    it('succeeds with correct credentials', function() {
-      cy.get('#username').type('testuser')
-      cy.get('#password').type('testpwd')
-      cy.get('#login').click()
-      cy.contains('test user logged in')
     })
 
   })

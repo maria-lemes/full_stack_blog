@@ -154,7 +154,7 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <Notification type='addBlog' message={addMessage} />
-        <p id='logged in'>
+        <p id='user'>
           {user.name} logged in
           <button onClick={handleLogout}>
           logout
