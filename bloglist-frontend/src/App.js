@@ -62,6 +62,14 @@ const App = () => {
     })
   }
 
+  const deleteBlog = (blogObject) => {
+    if(window.confirm(`Delete ${blogObject.title} ?`)){
+      blogService
+      .deleteBlog(blogObject.id)
+      .then(setBlogs( blogs.filter(blog => blog.id !== blogObject.id)))
+    }
+  }
+
 
   useEffect(() => {
     blogService.getAll().then(blogs => 
@@ -142,7 +150,7 @@ const App = () => {
   }else{
     const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
     const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
-    //const sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
+    
     return(
       <div>
         <h2>blogs</h2>
@@ -164,7 +172,7 @@ const App = () => {
         <div style= {hideWhenVisible}>
           <h2>Published blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} likeBlog={likeBlog}/>
+            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
           )}
         </div>
       </div>

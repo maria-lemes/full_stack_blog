@@ -1,4 +1,4 @@
-const Blog = ({blog,likeBlog}) => {
+const Blog = ({blog,likeBlog,deleteBlog}) => {
 
   const handleLikeClick = (event) => {
     const newBlog = {
@@ -9,11 +9,16 @@ const Blog = ({blog,likeBlog}) => {
    
   }
 
+  const handleDeleteClick = (event) => {
+    deleteBlog(blog)
+  }
+
   return(
   <div>
     <p>
     {blog.title} {blog.author} Likes: {blog.likes} <button onClick={handleLikeClick}>like</button>
     </p>
+    <button onClick={handleDeleteClick}>delete</button>
   </div>  
   )
   }
