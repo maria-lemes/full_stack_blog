@@ -8,25 +8,54 @@ test('renders content', () => {
   const blog = {
     title:'blog title',
     author:'blog author',
-    url:'url.com'
+    url:'url.com',
+    likes: 0
   }
 
   render(<Blog blog={blog} />)
 
   const description = screen.queryByText('blog title blog author')
   const url = screen.queryByText('url.com')
-  //const likes = screen.queryByText('0')
+  const likes = screen.queryByText('Likes: 0')
 
   expect(description).toBeDefined()
-  expect(url).toBeNull()
-  //expect(likes).toBeNull()
+  expect(url).not.toBeVisible()
+  expect(likes).not.toBeVisible()
+})
+
+test('view blog details', async () => {
+  const blogToLike = {
+    title:'blog to view',
+    author:'review',
+    url:'checkme.com',
+    likes: 0
+  }
+
+
+  const mockHandler = jest.fn()
+
+  render(
+    <Blog blog={blogToLike} likeBlog={mockHandler} />
+  )
+
+  const user = userEvent.setup()
+  const buttonView = screen.getByText('view')
+  await user.click(buttonView)
+
+  const url = screen.queryByText('checkme.com')
+  const likes = screen.queryByText('Likes: 0')
+
+  expect(url).toBeVisible()
+  expect(likes).toBeVisible()
+
 })
 
 test('clicking the like button txice calls event handler twice', async () => {
   const blogToLike = {
     title:'blog to like',
     author:'likable',
-    url:'twolikesplease.com'
+    url:'twolikesplease.com',
+    likes: 0
   }
 
   const mockHandler = jest.fn()
@@ -36,9 +65,12 @@ test('clicking the like button txice calls event handler twice', async () => {
   )
 
   const user = userEvent.setup()
-  const button = screen.getByText('like')
-  await user.click(button)
-  await user.click(button)
+  const buttonView = screen.getByText('view')
+  await user.click(buttonView)
+
+  const buttonLike = screen.getByText('like')
+  await user.click(buttonLike)
+  await user.click(buttonLike)
 
   expect(mockHandler.mock.calls).toHaveLength(2)
 

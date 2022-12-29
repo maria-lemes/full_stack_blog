@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -26,10 +27,11 @@ const App = () => {
 
 
   const [addMessage, setAddMessage] = useState(null)
-  const [addBlogVisible, setAddBlogVisible] = useState(false)
 
+  const blogFormRef = useRef()
 
   const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then(createdBlog => {
@@ -42,7 +44,6 @@ const App = () => {
           setAddMessage(null)
         }, 5000)
       })
-    setAddBlogVisible(false)
   }
 
   const likeBlog = (blogObject) => {
@@ -148,8 +149,6 @@ const App = () => {
       </div>
     )
   }else{
-    const hideWhenVisible = { display: addBlogVisible ? 'none' : '' }
-    const showWhenVisible = { display: addBlogVisible ? '' : 'none' }
     return(
       <div>
         <h2>blogs</h2>
@@ -160,16 +159,11 @@ const App = () => {
           logout
           </button>
         </p>
-        <button id='addNew'style= {hideWhenVisible} onClick={() => setAddBlogVisible(true)}>
-          Add new blog
-        </button>
-        <div style= {showWhenVisible}>
+        <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
           <h2>Create new blog</h2>
-          <BlogForm createBlog={addBlog} />
-          <button onClick={() => setAddBlogVisible(false)}>cancel</button>
-        </div>
-        <h2 style= {hideWhenVisible}>Published blogs</h2>
-        <div id='published' style= {hideWhenVisible}>
+          <BlogForm createBlog={addBlog}/>
+        </Togglable>
+        <div id='published'>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
           )}

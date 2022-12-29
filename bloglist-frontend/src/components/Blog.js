@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 
 const blogStyle = {
   paddingTop: 10,
@@ -9,6 +9,11 @@ const blogStyle = {
 }
 
 const Blog = ({ blog,likeBlog,deleteBlog }) => {
+
+  const [detailsVisible, setDetailsVisible] = useState(false)
+
+  //const hideWhenVisible = { display: detailsVisible ? 'none' : '' }
+  //const showWhenVisible = { display: detailsVisible ? '' : 'none' }
 
   const handleLikeClick = () => {
     const newBlog = {
@@ -25,17 +30,20 @@ const Blog = ({ blog,likeBlog,deleteBlog }) => {
   return(
     <div className='blog' style={blogStyle}>
       <p>
-        {blog.title} {blog.author} Likes: {blog.likes}<button onClick={handleLikeClick}>like</button>
+        {blog.title} {blog.author}
+        {!detailsVisible && <button onClick={() => setDetailsVisible(true)}>view</button>}
+        {detailsVisible && <button  onClick={() => setDetailsVisible(false)}>hide</button>}
       </p>
-      <button onClick={handleDeleteClick}>delete</button>
+      {detailsVisible &&
+      <div id='details' >
+        <p> Likes: {blog.likes} <button onClick={handleLikeClick}>like</button></p>
+        <p> {blog.url} </p>
+        <button onClick={handleDeleteClick}>delete</button>
+      </div>
+      }
     </div>
   )
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  //likeBlog: PropTypes.func.isRequired,
-  //deleteBlog: PropTypes.func.isRequired,
-}
 
 export default Blog
