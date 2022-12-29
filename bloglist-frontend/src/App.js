@@ -34,7 +34,7 @@ const App = () => {
       .create(blogObject)
       .then(createdBlog => {
         console.log(createdBlog)
-        setBlogs(blogs.concat(createdBlog).sort((a, b) => a.likes - b.likes))
+        setBlogs(blogs.concat(createdBlog).sort((a, b) => b.likes - a.likes))
         setAddMessage(
           `${createdBlog.title} was added to blogs list`
         )
@@ -57,7 +57,7 @@ const App = () => {
             }
           } else return blog
         })
-        setBlogs(updatedBlogs.sort((a, b) => a.likes - b.likes))
+        setBlogs(updatedBlogs.sort((a, b) => b.likes - a.likes))
       })
   }
 
@@ -72,7 +72,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort((a, b) => a.likes - b.likes) )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     )
   }, [])
 
@@ -160,7 +160,7 @@ const App = () => {
           logout
           </button>
         </p>
-        <button style= {hideWhenVisible} onClick={() => setAddBlogVisible(true)}>
+        <button id='addNew'style= {hideWhenVisible} onClick={() => setAddBlogVisible(true)}>
           Add new blog
         </button>
         <div style= {showWhenVisible}>
@@ -168,8 +168,8 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
           <button onClick={() => setAddBlogVisible(false)}>cancel</button>
         </div>
+        <h2 style= {hideWhenVisible}>Published blogs</h2>
         <div id='published' style= {hideWhenVisible}>
-          <h2 >Published blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
           )}
