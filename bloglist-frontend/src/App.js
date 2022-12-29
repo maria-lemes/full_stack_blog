@@ -168,8 +168,8 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
           <button onClick={() => setAddBlogVisible(false)}>cancel</button>
         </div>
-        <div style= {hideWhenVisible}>
-          <h2>Published blogs</h2>
+        <div id='published' style= {hideWhenVisible}>
+          <h2 >Published blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog}/>
           )}
